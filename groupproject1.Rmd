@@ -1,0 +1,202 @@
+---
+title: "Project 1"
+author: "Raquel Gonzalez"
+date: "2026-03-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 4.III
+
+### 4.I ggplot Visualization
+
+```{r}
+# Load dataset and packages
+hints <- read.csv("HINTSData_2020_clean.csv")
+library(ggplot2)
+```
+
+```{r}
+# Factor the QualityCare data
+hints$QualityCare <- factor(hints$QualityCare, levels = c(1, 2, 3, 4, 5), labels = c("Excellent", "Very Good", "Good", "Fair", "Poor"), ordered = TRUE)
+```
+
+```{r}
+# Plot the QualityCare data
+library(ggplot2)
+qual_care <- ggplot(hints, aes(x = QualityCare)) +
+  geom_bar(fill = "hotpink4", color = "palevioletred1") +
+  ggtitle("Bar Plot of Quality of Care Distribution") + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Quality of Care") +
+  ylab("Frequency")
+qual_care
+```
+
+```{r}
+# Factor the RaceEthn5 data
+hints$RaceEthn5 <- factor(hints$RaceEthn5, levels = c(1, 2, 3, 4, 5), labels = c("Non-Hispanic White", "Non-Hispanic Black", "Hispanic", "Non-Hispanic Asian", "Non-Hispanic Other"), ordered = TRUE)
+
+```
+
+
+```{r}
+# Make the data visualizations
+race_ethn <- ggplot(hints, aes(x = RaceEthn5)) +
+  geom_segment(aes(xend = RaceEthn5, yend = after_stat(count)), stat = "count", y = 0, color = "springgreen4") +
+  geom_point(stat = "count", size = 6, color = "palegreen1") +
+  ggtitle("Lollipop Chart of Ethnic Distributions") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Ethnicities") +
+  ylab("Frequency")
+
+race_ethn
+```
+
+
+**Interpretations**
+
+The majority of participants were Non-Hispanic White and, overall, participants primarily received a "very good" quality of care.
+
+### 4.II ggplot2 Visualization
+
+```{r}
+# Make the age data visualization
+age_plot <- ggplot(hints, aes(x = Age)) +
+  geom_histogram(binwidth = 5, fill = "thistle3", color = "mediumorchid4") + 
+  ggtitle("Age Distribution") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Age") + 
+  ylab("Frequency")
+age_plot 
+```
+
+```{r}
+# Plot the BMI data visualization
+bmi_plot <- ggplot(hints, aes(x = BMI)) +
+  geom_density(color = "darkcyan", fill = "powderblue", alpha = 0.5) + 
+  ggtitle("Density Plot of BMI Distribution") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("BMI") + 
+  ylab("Density")
+bmi_plot 
+```
+
+## 4.IV
+
+### 4.I Function
+```{r}
+# Create a single R Function that performs the 4.1 Analysis
+
+my_visual_func_I <- function(hints){
+  care_counts <- table(hints$QualityCare)
+  care_plot <- barplot(care_counts, main = "Bar Plot of Quality of Care Distribution", xlab = "Quality of Care", ylab = "Frequency", col = "orchid4", border = "mediumorchid4")
+  print(care_plot)
+  
+  dev.new()
+  
+  ethn_counts <- table(hints$RaceEthn5)
+  ethn_percent <- round(100 * ethn_counts/sum(ethn_counts), 1) 
+  my_colors <- c("mediumaquamarine","mediumturquoise", "lightskyblue","steelblue1","midnightblue")
+  ethn_plot <- pie(ethn_counts, labels = ethn_percent, main = "Pie Chart of Ethnic Distribution", col = my_colors, radius = 0.8)
+  legend("topright", inset = c(-0.1, 0), legend = names(ethn_counts), cex = 0.8, fill = my_colors, bty = "n")
+ print(ethn_plot) 
+}
+
+my_visual_func_I(hints)
+```
+
+```{r}
+care_counts <- table(hints$QualityCare)
+care_plot <- barplot(care_counts, main = "Bar Plot of Quality of Care Distribution", xlab = "Quality of Care", ylab = "Frequency", col = "orchid4", border = "mediumorchid4")
+
+care_plot
+```
+
+```{r}
+ethn_counts <- table(hints$RaceEthn5)
+ethn_percent <- round(100 * ethn_counts/sum(ethn_counts), 1) 
+my_colors <- c("mediumaquamarine","mediumturquoise", "lightskyblue","steelblue1","midnightblue")
+ethn_pie <- pie(ethn_counts, labels = ethn_percent, main = "Pie Chart of Ethnic Distribution", col = my_colors, radius = 0.8)
+legend("topright", inset = c(-0.1, 0), legend = names(ethn_counts), cex = 0.8, fill = my_colors, bty = "n")
+ethn_pie
+```
+
+
+### 4.II Function
+```{r}
+# Create a single R Function that performs the 4.11 Analysis
+
+my_visual_func_II <- function(hints) {
+  age_hist <- hist(hints$Age, main = "Histogram of Age Distribution", xlab = "Age (Years)", ylab = "Frequency", col = "thistle", border = "mediumorchid4", breaks = 10)
+
+  print(age_hist)
+  
+  dev.new()
+  
+  bmi_density <- density(hints$BMI, main = "BMI Density Plot")
+plot(bmi_density, main = "BMI Density Plot")
+polygon(bmi_density, col = "powderblue", border = "darkcyan")
+
+  print(bmi_density)
+}
+
+my_visual_func_II(hints)
+```
+
+```{r}
+age_hist <- hist(hints$Age, main = "Histogram of Age Distribution", xlab = "Age (Years)", ylab = "Frequency", col = "thistle", border = "mediumorchid4", breaks = 10)
+
+age_hist
+```
+
+```{r}
+bmi_density <- density(hints$BMI, main = "BMI Density Plot")
+plot(bmi_density, main = "BMI Density Plot")
+polygon(bmi_density, col = "powderblue", border = "darkcyan")
+
+bmi_density
+```
+
+ ##4. Univariate Visualization
+
+### 4.I QualityCare and RaceEthn5
+#Celia Lopez
+
+```{r}
+# Bar plot for QualityCare
+qc <- table(hints$QualityCare)
+
+barplot(qc,
+        main = "Distribution of QualityCare",
+        xlab = "QualityCare",
+        ylab = "Count")
+
+# Pie chart for RaceEthn5
+race <- table(hints$RaceEthn5)
+
+pie(race,
+    main = "Distribution of RaceEthn5")
+```
+
+Interpretation: The bar plot shows the distribution of QualityCare categories. Some categories appear more frequently, indicating that many respondents reported similar levels of healthcare quality. The pie chart shows the proportion of individuals across RaceEthn5 categories.
+
+### 4.II Age and BMI
+
+```{r}
+# Histogram for Age
+hist(hints$Age,
+     main = "Distribution of Age",
+     xlab = "Age",
+     ylab = "Frequency")
+
+# Boxplot for BMI
+boxplot(hints$BMI,
+        main = "Distribution of BMI",
+        ylab = "BMI")
+```
+
+Interpretation: The histogram shows the distribution of Age values among participants. Most individuals fall within a middle age range. The boxplot shows the spread of BMI values, with the median near the center and possible outliers.
